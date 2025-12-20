@@ -1,8 +1,10 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { shadesOfPurple } from "@clerk/themes";
 import { Inter } from "next/font/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
+import Header from "@/components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +23,13 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>
+          <ClerkProvider
+            appearance={{
+              theme: shadesOfPurple,
+            }}
+          >
             <ConvexClientProvider>
-              {/* Header */}
+              <Header />
               <main className="min-h-screen overflow-x-hidden bg-slate-900 text-white">
                 {children}
               </main>
