@@ -29,8 +29,8 @@ export default function RootLayout({ children }) {
             }}
           >
             <ConvexClientProvider>
-              <Header />
               <main className="min-h-screen overflow-x-hidden bg-slate-900 text-white">
+                <Header />
                 {children}
               </main>
             </ConvexClientProvider>
