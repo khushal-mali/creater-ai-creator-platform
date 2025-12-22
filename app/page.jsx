@@ -1,6 +1,7 @@
 "use client";
 
 import CustomMouse from "@/components/custom-mouse";
+import Footer from "@/components/Home/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -355,14 +356,15 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t px-4 py-8 sm:px-6">
+      {/* <footer className="relative z-10 border-t px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-7xl text-center">
           <p className="text-muted-foreground">
             Made with ❤️ by{" "}
             <span className="text-foreground font-semibold">Khushal Mali</span>
           </p>
         </div>
-      </footer>
+      </footer> */}
+      <Footer />
     </div>
   );
 }
