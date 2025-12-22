@@ -315,6 +315,44 @@ export default function Home() {
         </div>
       </section>
 
+      
+      {/* CTA Section */}
+      <section className="relative z-10 bg-linear-to-r from-gray-900/50 to-purple-900/20 px-4 py-16 sm:px-6 sm:py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="mb-6 text-4xl font-black sm:mb-8 sm:text-5xl md:text-6xl">
+            <span className="gradient-text-primary">Ready to create?</span>
+          </h2>
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-400 sm:mb-12">
+            Join thousands of creators who are already building their audience
+            and growing their business with our AI-powered platform.
+          </p>
+
+          <div className="flex flex-col justify-center gap-6 sm:flex-row">
+            <Link href="/dashboard">
+              <Button
+                size="xl"
+                variant="primary"
+                className="w-full rounded-full text-white"
+              >
+                Start Your Journey
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/feed">
+              <Button
+                variant="outline"
+                size="xl"
+                className="w-full rounded-full"
+              >
+                Explore the Feed
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      
+
 
     </div>
   );
