@@ -1,17 +1,23 @@
+"use client";
+
 import CustomMouse from "@/components/custom-mouse";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { features } from "@/lib/data";
-import { ArrowRight, Star } from "lucide-react";
+import { features, platformTabs } from "@/lib/data";
+import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState(0);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
       {/* Background gradient */}
@@ -149,6 +155,74 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Showcase */}
+      <section className="relative z-10 px-4 py-16 sm:px-6 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center sm:mb-16">
+            <h2 className="mb-4 text-3xl font-black sm:mb-6 sm:text-4xl md:text-5xl">
+              <span className="gradient-text-primary">How it works</span>
+            </h2>
+            <p className="mx-auto max-w-3xl text-lg text-gray-400 sm:text-xl">
+              Three powerful modules working together to supercharge your
+              content creation.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-8 lg:flex-row">
+            <div className="lg:w-1/3">
+              <div className="space-y-4">
+                {platformTabs.map((tab, index) => (
+                  <Button
+                    key={index}
+                    variant={activeTab === index ? "outline" : "ghost"}
+                    onClick={() => setActiveTab(index)}
+                    className="h-auto w-full justify-start p-6"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+                          activeTab === index
+                            ? "bg-linear-to-br from-purple-500 to-blue-500"
+                            : "bg-muted"
+                        }`}
+                      >
+                        <tab.icon className="h-6 w-6" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-lg font-bold">{tab.title}</h3>
+                      </div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:w-2/3">
+              <Card className="border-gray-800 bg-gray-900/50">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-white">
+                    {platformTabs[activeTab].title}
+                  </CardTitle>
+                  <CardDescription className="text-lg text-gray-400">
+                    {platformTabs[activeTab].description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {platformTabs[activeTab].features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 shrink-0 text-green-400" />
+                        <span className="text-gray-300">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
