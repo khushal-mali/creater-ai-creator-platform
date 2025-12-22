@@ -156,7 +156,7 @@ const DashboardLayout = ({ children }) => {
             </div>
 
             {/* Right Side - Notifications + User */}
-            <div className="flex items-center space-x-4">
+            <div className="flex h-10 items-center space-x-4">
               {/* User Button */}
               <UserButton
                 appearance={{
@@ -173,7 +173,7 @@ const DashboardLayout = ({ children }) => {
           </div>
         </header>
         {/* Page Content */}
-        <main className="mt-16">{children}</main>
+        <main className="mt-18">{children}</main>
       </div>
     </div>
   );
