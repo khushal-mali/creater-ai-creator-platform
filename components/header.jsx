@@ -14,6 +14,10 @@ const Header = () => {
   const { isAuthenticated, isLoading } = useStoreUser();
   const path = usePathname();
 
+  if (path.includes("/dashboard")) {
+    return null;
+  }
+
   return (
     <header className="fixed top-6 left-1/2 z-50 w-full max-w-3xl -translate-x-1/2 transform px-4">
       <div className="flex items-center justify-between gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-md sm:px-6 md:px-8">
