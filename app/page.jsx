@@ -1,6 +1,7 @@
 "use client";
 
 import CustomMouse from "@/components/custom-mouse";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { features, platformTabs, socialProofStats } from "@/lib/data";
+import { features, platformTabs, socialProofStats, testimonials } from "@/lib/data";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -253,6 +254,67 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      
+      {/* Testimonials */}
+      <section
+        id="testimonials"
+        className="relative z-10 px-4 py-16 sm:px-6 sm:py-24"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center sm:mb-16">
+            <h2 className="mb-4 text-3xl font-black sm:mb-6 sm:text-4xl md:text-5xl">
+              <span className="gradient-text-primary">What creators say</span>
+            </h2>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <Card
+                key={index}
+                className="card-glass transition-all duration-300 hover:shadow-lg"
+              >
+                <CardContent className="p-8">
+                  <div className="mb-4 flex items-center gap-1">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                      />
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-gray-300">
+                    &quot;{testimonial.content}&quot;
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-12 w-12">
+                      <Image
+                        src={`https://images.unsplash.com/photo-${testimonial.imageId}?w=100&h=100&fit=crop&crop=face`}
+                        alt={testimonial.name}
+                        fill
+                        className="rounded-full border-2 border-gray-700 object-cover"
+                        sizes="48px"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-white">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {testimonial.role}
+                      </div>
+                      <Badge variant="secondary" className="mt-1">
+                        {testimonial.company}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
     </div>
   );
