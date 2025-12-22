@@ -50,7 +50,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative z-10 border-t border-gray-800 bg-linear-to-b from-black via-gray-900/50 to-black">
+    <footer className="relative z-10 border-t border-gray-800">
       {/* Main Footer Content */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
