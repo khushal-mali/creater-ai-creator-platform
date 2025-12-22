@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { features, platformTabs } from "@/lib/data";
+import { features, platformTabs, socialProofStats } from "@/lib/data";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -226,6 +226,34 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Social Proof */}
+      <section className="relative z-10 bg-linear-to-r from-gray-900/50 to-purple-900/20 px-4 py-16 sm:px-6 sm:py-24">
+        <div className="mx-auto max-w-7xl text-center">
+          <h2 className="mb-12 text-3xl font-black sm:mb-16 sm:text-4xl md:text-5xl">
+            <span className="gradient-text-primary">
+              Loved by creators worldwide
+            </span>
+          </h2>
+
+          <div className="grid gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+            {socialProofStats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 to-blue-500 sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+                  <stat.icon className="h-6 w-6 text-white sm:h-7 sm:w-7 lg:h-8 lg:w-8" />
+                </div>
+                <div className="gradient-text-accent mb-2 text-3xl font-black sm:text-4xl lg:text-5xl">
+                  {stat.metric}
+                </div>
+                <div className="text-base text-gray-400 sm:text-lg">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
