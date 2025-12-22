@@ -356,6 +356,8 @@ export default function Home() {
       </section>
 
       {/* Footer */}
+      <Footer />
+
       {/* <footer className="relative z-10 border-t px-4 py-8 sm:px-6">
         <div className="mx-auto max-w-7xl text-center">
           <p className="text-muted-foreground">
@@ -364,7 +366,6 @@ export default function Home() {
           </p>
         </div>
       </footer> */}
-      <Footer />
     </div>
   );
 }
