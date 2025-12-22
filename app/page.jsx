@@ -10,7 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { features, platformTabs, socialProofStats, testimonials } from "@/lib/data";
+import {
+  features,
+  platformTabs,
+  socialProofStats,
+  testimonials,
+} from "@/lib/data";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -255,7 +260,6 @@ export default function Home() {
         </div>
       </section>
 
-      
       {/* Testimonials */}
       <section
         id="testimonials"
@@ -315,7 +319,6 @@ export default function Home() {
         </div>
       </section>
 
-      
       {/* CTA Section */}
       <section className="relative z-10 bg-linear-to-r from-gray-900/50 to-purple-900/20 px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-4xl text-center">
@@ -351,9 +354,15 @@ export default function Home() {
         </div>
       </section>
 
-      
-
-
+      {/* Footer */}
+      <footer className="relative z-10 border-t px-4 py-8 sm:px-6">
+        <div className="mx-auto max-w-7xl text-center">
+          <p className="text-muted-foreground">
+            Made with ❤️ by{" "}
+            <span className="text-foreground font-semibold">Khushal Mali</span>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
