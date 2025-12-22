@@ -1,5 +1,12 @@
 import CustomMouse from "@/components/custom-mouse";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import { features } from "@/lib/data";
 import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -101,6 +108,47 @@ export default function Home() {
               className="h-auto w-full object-contain"
               priority
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section
+        id="features"
+        className="relative z-10 mt-14 bg-linear-to-r from-gray-900/50 to-purple-900/20 px-4 py-16 sm:px-6 sm:py-24"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center sm:mb-16 lg:mb-20">
+            <h2 className="mb-4 text-3xl font-black sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl">
+              <span className="gradient-text-primary">Everything you need</span>
+            </h2>
+            <p className="mx-auto max-w-3xl px-4 text-lg text-gray-400 sm:text-xl">
+              From AI-powered writing assistance to advanced analytics,
+              we&apos;ve built the complete toolkit for modern creators.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <Card
+                key={index}
+                className="group card-glass transition-all duration-300 hover:scale-105"
+              >
+                <CardContent className="p-6 sm:p-8">
+                  <div
+                    className={`h-12 w-12 bg-linear-to-br sm:h-16 sm:w-16 ${feature.color} mb-4 flex items-center justify-center rounded-2xl transition-transform group-hover:scale-110 sm:mb-6`}
+                  >
+                    <feature.icon className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+                  </div>
+                  <CardTitle className="mb-3 text-lg text-white sm:mb-4 sm:text-xl">
+                    {feature.title}
+                  </CardTitle>
+                  <CardDescription className="text-sm text-gray-400 sm:text-base">
+                    {feature.desc}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

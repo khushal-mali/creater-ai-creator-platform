@@ -127,3 +127,17 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Text Gradient - Complex gradient used across the app */
+.gradient-text-primary {
+  @apply bg-linear-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent;
+}
+
+.gradient-text-accent {
+  @apply bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent;
+}
+
+/* Glass Card Effect - Complex background/border combination used frequently */
+.card-glass {
+  @apply border-gray-800 bg-gray-900/50 hover:border-purple-500/50;
+}
