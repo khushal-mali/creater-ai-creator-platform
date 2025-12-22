@@ -1,10 +1,11 @@
+import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
 import { Inter } from "next/font/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
-import Header from "@/components/header";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
             }}
           >
             <ConvexClientProvider>
+              <Toaster richColors />
               <main className="min-h-screen overflow-x-hidden bg-slate-900 text-white">
                 <Header />
                 {children}
