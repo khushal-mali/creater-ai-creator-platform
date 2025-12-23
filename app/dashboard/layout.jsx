@@ -75,12 +75,13 @@ const DashboardLayout = ({ children }) => {
             <X className="size-5" />
           </Button>
         </div>
+
         {/* Navigation */}
         <nav className="space-y-2 p-4">
           {sidebarItems.map((item, index) => {
             const isActive =
               pathname === item.href ||
-              (pathname !== "/dashboard" && pathname.startsWith(item.href));
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
             return (
               <Link
@@ -92,7 +93,7 @@ const DashboardLayout = ({ children }) => {
                   className={cn(
                     "group flex items-center space-x-3 rounded-xl px-4 py-3 transition-all duration-200",
                     isActive
-                      ? "border border-purple-500 bg-linear-to-r from-purple-600/20 to-blue-600/20 text-white"
+                      ? "border border-purple-500/30 bg-linear-to-r from-purple-600/20 to-blue-600/20 text-white"
                       : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
                   )}
                 >
@@ -107,7 +108,7 @@ const DashboardLayout = ({ children }) => {
                   <span className="font-medium">{item.title}</span>
 
                   {/* Badge for Create Post if draft exists */}
-                  {item.title === "Create Post" && true && (
+                  {item.title === "Create Post" && draftPost && (
                     <Badge
                       variant="secondary"
                       className="ml-auto border-orange-500/30 bg-orange-500/20 text-xs text-orange-300"
