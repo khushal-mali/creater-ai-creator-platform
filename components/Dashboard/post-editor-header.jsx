@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { Badge } from "../ui/badge";
 import {
   ArrowLeft,
   Calendar,
@@ -8,13 +6,13 @@ import {
   Send,
   Settings,
 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
