@@ -1,6 +1,8 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { api } from "@/convex/_generated/api";
+import { useConvexQuery } from "@/hooks/use-convex-query";
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import {
@@ -43,6 +45,7 @@ const sidebarItems = [
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const { data: draftPost, isLoading } = useConvexQuery(api.posts.getUserDraft);
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
@@ -77,7 +80,7 @@ const DashboardLayout = ({ children }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-2 p-4">
+        <nav className="space-y-4 p-4">
           {sidebarItems.map((item, index) => {
             const isActive =
               pathname === item.href ||
@@ -91,10 +94,10 @@ const DashboardLayout = ({ children }) => {
               >
                 <div
                   className={cn(
-                    "group flex items-center space-x-3 rounded-xl px-4 py-3 transition-all duration-200",
+                    "group flex items-center space-x-3 rounded-xl border px-4 py-3 transition-all",
                     isActive
-                      ? "border border-purple-500/30 bg-linear-to-r from-purple-600/20 to-blue-600/20 text-white"
-                      : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
+                      ? "border-purple-500/30 bg-linear-to-r from-purple-600/20 to-blue-600/20 text-white"
+                      : "border-transparent text-slate-300 hover:bg-slate-700/50 hover:text-white",
                   )}
                 >
                   <item.icon
