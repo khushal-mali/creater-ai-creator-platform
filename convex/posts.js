@@ -30,7 +30,7 @@ export const create = mutation({
     tags: v.optional(v.array(v.string())),
     category: v.optional(v.string()),
     featuredImage: v.optional(v.string()),
-    scheduledFor: v.optional(v.string()),
+    scheduledFor: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentuser);
@@ -59,7 +59,7 @@ export const create = mutation({
         featuredImage: args.featuredImage,
         updatedAt: now,
         publishedAt: now,
-        scheduleFor: args.scheduledFor,
+        scheduledFor: args.scheduledFor,
       });
       return existingDraft._id;
     }
