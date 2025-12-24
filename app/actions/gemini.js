@@ -12,16 +12,16 @@ export const generateBlogContent = async (title, category = "", tags = []) => {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
     });
 
     // Create a detailed prompt for blog content generation
     const prompt = `
   Write a comprehensive blog post with the title: "${title}"
-  
+
   ${category ? `Category: ${category}` : ""}
   ${tags.length > 0 ? `Tags: ${tags.join(", ")}` : ""}
-  
+
   Requirements:
   - Write engaging, informative content that matches the title
   - Use proper HTML formatting with headers (h2, h3), paragraphs, lists, and emphasis
@@ -34,7 +34,7 @@ export const generateBlogContent = async (title, category = "", tags = []) => {
   - Use <ul> and <li> for bullet points when appropriate
   - Use <strong> and <em> for emphasis
   - Ensure the content is original and valuable to readers
-  
+
   Do not include the title in the content as it will be added separately.
   Start directly with the introduction paragraph.
   `;
@@ -56,6 +56,7 @@ export const generateBlogContent = async (title, category = "", tags = []) => {
 
     // Handle specific error type
     if (error.message?.includes("API key")) {
+      console.log(error.message);
       return {
         success: false,
         error: "AI service configuration error. Please try again later.",
@@ -63,6 +64,7 @@ export const generateBlogContent = async (title, category = "", tags = []) => {
     }
 
     if (error.message?.includes("quota") || error.message?.includes("limit")) {
+      console.log(error.message);
       return {
         success: false,
         error: "AI service temporarily unavailable. Please try again later.",
@@ -83,12 +85,12 @@ export const improveContent = async (
   improvementType = "enhance",
 ) => {
   try {
-    if (!content || content.trim().length < 100) {
+    if (!currentContent || currentContent.trim().length < 100) {
       throw new Error("Generated content is too short or empty");
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
     });
 
     let prompt = "";
@@ -97,9 +99,9 @@ export const improveContent = async (
       case "expand":
         prompt = `
        Take this blog content and expand it with more details, examples, and insights:
- 
+
        ${currentContent}
- 
+
        Requirements:
        - Keep the existing structure and main points
        - Add more depth and detail to each section
@@ -112,9 +114,9 @@ export const improveContent = async (
       case "simplify":
         prompt = `
        Take this blog content and make it more concise and easier to read:
- 
+
        ${currentContent}
- 
+
        Requirements:
        - Keep all main points but make them clearer
        - Remove unnecessary complexity
@@ -127,9 +129,9 @@ export const improveContent = async (
       default: // enhance
         prompt = `
        Improve this blog content by making it more engaging and well-structured:
- 
+
        ${currentContent}
- 
+
        Requirements:
        - Improve the flow and readability
        - Add engaging transitions between sections
