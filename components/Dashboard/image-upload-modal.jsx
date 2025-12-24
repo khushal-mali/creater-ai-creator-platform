@@ -1,0 +1,260 @@
+"use client";
+
+import React, { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Label } from "@/components/ui/label";
+import { useDropzone } from "react-dropzone";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Upload,
+  Image as ImageIcon,
+  Crop,
+  Type,
+  Wand2,
+  Loader2,
+  RefreshCw,
+  Check,
+  X,
+} from "lucide-react";
+import { toast } from "sonner";
+import { uploadToImageKit } from "@/lib/imagekit";
+
+// Form validation schema
+const transformationSchema = z.object({
+  aspectRatio: z.string().default("original"),
+  customWidth: z.number().min(100).max(2000).default(800),
+  customHeight: z.number().min(100).max(2000).default(600),
+  smartCropFocus: z.string().default("auto"),
+  textOverlay: z.string().optional(),
+  textFontSize: z.number().min(12).max(200).default(50),
+  textColor: z.string().default("#ffffff"),
+  textPosition: z.string().default("center"),
+  backgroundRemoved: z.boolean().default(false),
+  dropShadow: z.boolean().default(false),
+});
+
+const ASPECT_RATIOS = [
+  { label: "Original", value: "original" },
+  { label: "Square (1:1)", value: "1:1", width: 400, height: 400 },
+  { label: "Landscape (16:9)", value: "16:9", width: 800, height: 450 },
+  { label: "Portrait (4:5)", value: "4:5", width: 400, height: 500 },
+  { label: "Story (9:16)", value: "9:16", width: 450, height: 800 },
+  { label: "Custom", value: "custom" },
+];
+
+const SMART_CROP_OPTIONS = [
+  { label: "Auto", value: "auto" },
+  { label: "Face", value: "face" },
+  { label: "Center", value: "center" },
+  { label: "Top", value: "top" },
+  { label: "Bottom", value: "bottom" },
+];
+
+const TEXT_POSITIONS = [
+  { label: "Center", value: "center" },
+  { label: "Top Left", value: "north_west" },
+  { label: "Top Right", value: "north_east" },
+  { label: "Bottom Left", value: "south_west" },
+  { label: "Bottom Right", value: "south_east" },
+  { label: "top", value: "north" },
+  { label: "bottom", value: "south" },
+  { label: "left", value: "west" },
+  { label: "right", value: "east" },
+];
+
+const ImageUploadModal = ({
+  isOpen,
+  onClose,
+  onImageSelect,
+  title = "Upload & Transform Image",
+}) => {
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [transformedImage, setTransformedImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isTransforming, setIsTransforming] = useState(false);
+  const [activeTab, setActiveTab] = useState("upload");
+
+  const { watch, setValue, reset } = useForm({
+    resolver: zodResolver(transformationSchema),
+    defaultValues: {
+      aspectRatio: "original",
+      customWidth: 800,
+      customHeight: 600,
+      smartCropFocus: "auto",
+      textOverlay: "",
+      textFontSize: 50,
+      textColor: "#ffffff",
+      textPosition: "center",
+      backgroundRemoved: false,
+      dropShadow: false,
+    },
+  });
+
+  const watchedValues = watch();
+
+  // Reset form
+  const resetForm = () => {
+    setUploadedImage(null);
+    setTransformedImage(null);
+    setActiveTab("upload");
+    reset();
+  };
+
+  // Handle modal close
+  const handleClose = () => {
+    onClose();
+    resetForm();
+  };
+
+  // Handle file upload
+  const onDrop = useCallback(async (acceptedFiles) => {
+    console.log(acceptedFiles);
+    const file = acceptedFiles[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const fileName = `post-image-${Date.now()}-${file.name}`;
+      const result = await uploadToImageKit(file, fileName);
+
+      if (result.success) {
+        setUploadedImage(result.data);
+        setTransformedImage(result.data.url);
+        setActiveTab("transform");
+        toast.success("Image uploaded successfully!");
+      } else {
+        toast.error(result.error || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".webp", ".gif"],
+    },
+    multiple: false,
+  });
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="h-[90vh]! max-w-6xl! overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-white">{title}</DialogTitle>
+          <DialogDescription>
+            Upload an image and apply AI-powered transformations
+          </DialogDescription>
+        </DialogHeader>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="upload">Upload</TabsTrigger>
+            <TabsTrigger value="transform" disabled={!uploadedImage}>
+              Transform
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="upload" className="space-y-4">
+            <div
+              {...getRootProps()}
+              className={`cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+                isDragActive
+                  ? "border-purple-400 bg-purple-400/10"
+                  : "border-slate-600 hover:border-slate-500"
+              }`}
+            >
+              <input {...getInputProps()} />
+
+              {isUploading ? (
+                <div className="space-y-4">
+                  <Loader2 className="mx-auto h-12 w-12 animate-spin text-purple-400" />
+                  <p className="text-slate-300">Uploading image...</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <Upload className="mx-auto h-12 w-12 text-slate-400" />
+                  <div>
+                    <p className="text-lg text-white">
+                      {isDragActive
+                        ? "Drop the image here"
+                        : "Drag & drop an image here"}
+                    </p>
+                    <p className="mt-2 text-sm text-slate-400">
+                      or click to select a file (JPG, PNG, WebP, GIF - Max 10MB)
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {uploadedImage && (
+              <div className="space-y-4 text-center">
+                <Badge
+                  variant="secondary"
+                  className="border-green-500/30 bg-green-500/20 text-green-300"
+                >
+                  <Check className="mr-1 h-3 w-3" />
+                  Image uploaded successfully!
+                </Badge>
+                <div className="text-sm text-slate-400">
+                  {uploadedImage.width} × {uploadedImage.height} •{" "}
+                  {Math.round(uploadedImage.size / 1024)}KB
+                </div>
+                <Button
+                  onClick={() => setActiveTab("transform")}
+                  className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  Start Transforming
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="transform" className="space-y-6"></TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default ImageUploadModal;
