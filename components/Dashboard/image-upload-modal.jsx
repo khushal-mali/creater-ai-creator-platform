@@ -268,7 +268,7 @@ const ImageUploadModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="!h-[90vh] !max-w-6xl overflow-y-auto">
+      <DialogContent className="h-[90vh]! max-w-6xl! overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white">{title}</DialogTitle>
           <DialogDescription>
