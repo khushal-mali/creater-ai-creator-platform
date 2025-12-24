@@ -1,13 +1,17 @@
 "use client";
+
 import { api } from "@/convex/_generated/api";
 import { useConvexMutation } from "@/hooks/use-convex-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
-import PostEditorHeader from "./post-editor-header";
+import { toast } from "sonner";
+import { z } from "zod";
 import PostEditorContent from "./post-editor-content";
+import PostEditorHeader from "./post-editor-header";
+import PostEditSettings from "./post-editor-settings";
+import ImageUploadModal from "./image-upload-modal";
 
 const postSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title too long"),
@@ -18,21 +22,25 @@ const postSchema = z.object({
   scheduledFor: z.string().optional(),
 });
 
-const PostEditor = ({ initialData = null, mode = "create" }) => {
-  const [isSettigsOpen, setIsSettingsOpen] = useState(false);
-  const [isImageModelOpen, setIsImageModelOpen] = useState(false);
-  const [imageModelType, setImageModelType] = useState("featured");
+export default function PostEditor({
+  initialData = null,
+  mode = "create", // "create" or "edit"
+}) {
+  const router = useRouter();
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageModalType, setImageModalType] = useState("featured");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [quillRef, setQuillRef] = useState(null);
 
-  const router = useRouter();
-
+  // Mutations with built-in loading states
   const { mutate: createPost, isLoading: isCreateLoading } = useConvexMutation(
-    api.posts.update,
-  );
-  const { mutate: updatePost, isLoading: isUpdating } = useConvexMutation(
     api.posts.create,
   );
+  const { mutate: updatePost, isLoading: isUpdating } = useConvexMutation(
+    api.posts.update,
+  );
 
+  // Form setup
   const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
@@ -47,21 +55,115 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
     },
   });
 
-  const handleSave = () => {};
-  const handlePublish = () => {};
-  const handleSchedule = () => {};
+  const { handleSubmit, watch, setValue } = form;
+  const watchedValues = watch();
+
+  // Auto-save for drafts
+  useEffect(() => {
+    if (!watchedValues.title && !watchedValues.content) return;
+
+    const autoSave = setInterval(() => {
+      if (watchedValues.title || watchedValues.content) {
+        if (mode === "create") handleSave(true); // Silent save
+      }
+    }, 30000);
+
+    return () => clearInterval(autoSave);
+  }, [watchedValues.title, watchedValues.content]);
+
+  // Submit handler
+  const onSubmit = async (data, action, silent = false) => {
+    try {
+      const postData = {
+        title: data.title,
+        content: data.content,
+        category: data.category || undefined,
+        tags: data.tags,
+        featuredImage: data.featuredImage || undefined,
+        status: action === "publish" ? "published" : "draft",
+        scheduledFor: data.scheduledFor
+          ? new Date(data.scheduledFor).getTime()
+          : undefined,
+      };
+
+      let resultId;
+
+      if (mode === "edit" && initialData?._id) {
+        // Always use update for edit mode
+        resultId = await updatePost({
+          id: initialData._id,
+          ...postData,
+        });
+      } else if (initialData?._id && action === "draft") {
+        // If we have existing draft data, update it
+        resultId = await updatePost({
+          id: initialData._id,
+          ...postData,
+        });
+      } else {
+        // Create new post (will auto-update existing draft if needed)
+        console.log(postData);
+        resultId = await createPost(postData);
+      }
+
+      if (!silent) {
+        const message =
+          action === "publish" ? "Post published!" : "Draft saved!";
+        toast.success(message);
+        if (action === "publish") router.push("/dashboard/posts");
+      }
+
+      return resultId;
+    } catch (error) {
+      if (!silent) toast.error(error.message || "Failed to save post");
+      throw error;
+    }
+  };
+
+  const handleSave = (silent = false) => {
+    handleSubmit((data) => onSubmit(data, "draft", silent))();
+  };
+
+  const handlePublish = () => {
+    handleSubmit((data) => onSubmit(data, "publish"))();
+  };
+
+  const handleSchedule = () => {
+    if (!watchedValues.scheduledFor) {
+      toast.error("Please select a date and time to schedule");
+      return;
+    }
+    handleSubmit((data) => onSubmit(data, "schedule"))();
+  };
+
+  // Handle image selection
+  const handleImageSelect = (imageData) => {
+    if (imageModalType === "featured") {
+      setValue("featuredImage", imageData.url);
+      toast.success("Featured image added!");
+    } else if (imageModalType === "content" && quillRef) {
+      const quill = quillRef.getEditor();
+      const range = quill.getSelection();
+      const index = range ? range.index : quill.getLength();
+
+      quill.insertEmbed(index, "image", imageData.url);
+      quill.setSelection(index + 1);
+      toast.success("Image inserted!");
+    }
+
+    setIsImageModalOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
       <PostEditorHeader
         mode={mode}
         initialData={initialData}
-        isPublishing={isUpdating || isCreateLoading}
+        isPublishing={isCreateLoading || isUpdating}
         onSave={handleSave}
-        onSettingsOpen={() => setIsSettingsOpen((prev) => !prev)}
         onPublish={handlePublish}
         onSchedule={handleSchedule}
+        onSettingsOpen={() => setIsSettingsOpen(true)}
         onBack={() => router.push("/dashboard")}
       />
 
@@ -69,12 +171,30 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
         form={form}
         setQuillRef={setQuillRef}
         onImageUpload={(type) => {
-          setImageModelType(type);
-          isImageModelOpen(true);
+          setImageModalType(type);
+          setIsImageModalOpen(true);
         }}
+      />
+
+      {/* Setting dialog */}
+      <PostEditSettings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        form={form}
+        mode={mode}
+      />
+
+      {/* image upload dialog */}
+      <ImageUploadModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        onImageSelect={handleImageSelect}
+        title={
+          imageModalType === "featured"
+            ? "Upload Featured Image"
+            : "Insert Image"
+        }
       />
     </div>
   );
-};
-
-export default PostEditor;
+}
