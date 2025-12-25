@@ -14,6 +14,7 @@ const Header = () => {
   const { isAuthenticated, isLoading } = useStoreUser();
   const path = usePathname();
 
+  // Hide header on public profile and post pages (but not on feed)
   if (path !== "/" && path !== "/feed" && path.split("/").length >= 2) {
     return null;
   }
