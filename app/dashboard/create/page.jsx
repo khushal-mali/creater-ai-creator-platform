@@ -15,10 +15,21 @@ const CreatePost = () => {
     api.users.getCurrentuser,
   );
 
+  // if (isDraftLoading || userLoading) {
+  //   return (
+  //     <div className="flex h-48 w-full items-center justify-center">
+  //       <RingLoader className="size-10" color="#D8B4FE" />
+  //     </div>
+  //   );
+  // }
+
   if (isDraftLoading || userLoading) {
     return (
-      <div className="flex h-48 w-full items-center justify-center">
-        <RingLoader className="size-10" color="#D8B4FE" />
+      <div className="flex min-h-96 items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-purple-400"></div>
+          <p className="mt-4 text-slate-400">Loading post editor...</p>
+        </div>
       </div>
     );
   }
