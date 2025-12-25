@@ -154,7 +154,7 @@ export const update = mutation({
   },
 });
 
-export const gerUserPosts = query({
+export const getUserPosts = query({
   args: {
     status: v.optional(v.union(v.literal("draft"), v.literal("published"))),
   },
@@ -206,7 +206,7 @@ export const deletePost = mutation({
     const post = await ctx.db.get(args.id);
     if (!post) {
       throw new Error("Post not found");
-    } 
+    }
 
     // Check if user owns the post
     if (post.authorId !== user._id) {
