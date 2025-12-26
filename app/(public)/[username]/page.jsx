@@ -1,16 +1,16 @@
 "use client";
-import React from "react";
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import { Calendar, UserPlus, UserCheck } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import PostCard from "@/components/Dashboard/post-card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
+import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { useUser } from "@clerk/nextjs";
+import { Calendar, UserCheck, UserPlus } from "lucide-react";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import React from "react";
 import { toast } from "sonner";
 import PublicHeader from "./_components/public-header";
-import PostCard from "@/components/Dashboard/post-card";
 
 const UserPage = ({ params }) => {
   const { username } = React.use(params);
@@ -22,6 +22,11 @@ const UserPage = ({ params }) => {
     isLoading: userLoading,
     error: userError,
   } = useConvexQuery(api.users.getByUsername, { username });
+
+  const { data: currentConvexUser } = useConvexQuery(
+    api.users.getCurrentuser,
+    currentUser ? {} : "skip",
+  );
 
   // Get user's posts
   const { data: postsData, isLoading: postsLoading } = useConvexQuery(
@@ -64,7 +69,7 @@ const UserPage = ({ params }) => {
 
   const posts = postsData?.posts || [];
   const isOwnProfile =
-    currentUser && currentUser.publicMetadata?.username === user.username;
+    currentConvexUser && currentConvexUser?.username === user.username;
 
   const handleFollowToggle = async () => {
     if (!currentUser) {
@@ -88,7 +93,7 @@ const UserPage = ({ params }) => {
         {/* Profile Header */}
         <div className="mb-12 text-center">
           <div className="relative mx-auto mb-6 h-24 w-24">
-            {user.imageUrl ? (
+            {user?.imageUrl ? (
               <Image
                 src={user.imageUrl}
                 alt={user.name}
