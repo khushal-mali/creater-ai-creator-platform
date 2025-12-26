@@ -130,6 +130,8 @@ const PostPage = ({ params }) => {
     }
   };
 
+  console.log(post && post.content);
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <PublicHeader link={`/${username}`} title="Back to Profile" />
@@ -217,10 +219,16 @@ const PostPage = ({ params }) => {
           </div>
 
           {/* Post Content */}
-          <div
+          {/* <div
             className="prose prose-lg prose-invert prose-purple max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          /> */}
+          {
+            <div
+              className="prose prose-lg prose-invert prose-purple w-full max-w-full overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+          }
 
           <div className="flex items-center gap-6 border-t border-slate-800 pt-4">
             <Button
@@ -376,73 +384,164 @@ const PostPage = ({ params }) => {
 
       {/* Custom prose styles */}
       <style jsx global>{`
+        .prose-invert {
+          max-width: 100%;
+          overflow-wrap: break-word;
+          word-break: normal;
+          hyphens: auto;
+          line-height: 1.75;
+          letter-spacing: 0.01em;
+        }
+
+        /* ===============================
+     HEADINGS
+     =============================== */
         .prose-invert h1 {
           color: white;
           font-weight: 700;
           font-size: 2.5rem;
-          margin: 1.5rem 0;
+          margin: 1.75rem 0 1rem;
+          word-break: normal;
         }
+
         .prose-invert h2 {
           color: white;
           font-weight: 600;
           font-size: 2rem;
-          margin: 1.25rem 0;
+          margin: 1.5rem 0 0.75rem;
+          word-break: normal;
         }
+
         .prose-invert h3 {
           color: white;
           font-weight: 600;
           font-size: 1.5rem;
-          margin: 1rem 0;
+          margin: 1.25rem 0 0.5rem;
+          word-break: normal;
         }
+
+        /* ===============================
+     PARAGRAPHS & TEXT
+     =============================== */
         .prose-invert p {
           color: rgb(203, 213, 225);
-          line-height: 1.7;
           margin: 1rem 0;
+          white-space: normal;
         }
-        .prose-invert blockquote {
-          border-left: 4px solid rgb(147, 51, 234);
+
+        .prose-invert strong {
+          color: white;
+        }
+
+        .prose-invert em {
           color: rgb(203, 213, 225);
-          padding-left: 1rem;
-          margin: 1.5rem 0;
-          font-style: italic;
         }
+
+        /* ===============================
+     LINKS (NO UGLY BREAKS)
+     =============================== */
         .prose-invert a {
           color: rgb(147, 51, 234);
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          overflow-wrap: break-word;
+          word-break: normal;
         }
+
         .prose-invert a:hover {
           color: rgb(168, 85, 247);
         }
+
+        /* ===============================
+     IMAGES (NEVER OVERFLOW)
+     =============================== */
+        .prose-invert img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 0.5rem;
+          margin: 1.5rem auto;
+        }
+
+        /* ===============================
+     BLOCKQUOTES
+     =============================== */
+        .prose-invert blockquote {
+          border-left: 4px solid rgb(147, 51, 234);
+          padding-left: 1rem;
+          margin: 1.5rem 0;
+          color: rgb(203, 213, 225);
+          font-style: italic;
+          background: rgba(147, 51, 234, 0.05);
+        }
+
+        /* ===============================
+     INLINE CODE
+     =============================== */
         .prose-invert code {
           background: rgb(51, 65, 85);
           color: rgb(248, 113, 113);
-          padding: 0.125rem 0.25rem;
+          padding: 0.15rem 0.35rem;
           border-radius: 0.25rem;
+          white-space: normal;
         }
+
+        /* ===============================
+     CODE BLOCKS (SCROLL, DON’T WRAP)
+     =============================== */
         .prose-invert pre {
           background: rgb(30, 41, 59);
           color: white;
           padding: 1rem;
           border-radius: 0.5rem;
           border: 1px solid rgb(71, 85, 105);
+          max-width: 100%;
           overflow-x: auto;
+          white-space: pre;
         }
+
+        /* ===============================
+     LISTS
+     =============================== */
         .prose-invert ul,
         .prose-invert ol {
-          color: rgb(203, 213, 225);
           padding-left: 1.5rem;
+          margin: 1rem 0;
+          color: rgb(203, 213, 225);
         }
+
         .prose-invert li {
-          margin: 0.25rem 0;
+          margin: 0.35rem 0;
         }
-        .prose-invert img {
-          border-radius: 0.5rem;
+
+        /* ===============================
+     TABLES (RESPONSIVE)
+     =============================== */
+        .prose-invert table {
+          width: 100%;
+          max-width: 100%;
+          display: block;
+          overflow-x: auto;
+          border-collapse: collapse;
           margin: 1.5rem 0;
         }
-        .prose-invert strong {
-          color: white;
+
+        .prose-invert th,
+        .prose-invert td {
+          padding: 0.5rem 0.75rem;
+          border: 1px solid rgb(71, 85, 105);
+          text-align: left;
         }
-        .prose-invert em {
-          color: rgb(203, 213, 225);
+
+        /* ===============================
+     EMBEDS (IFRAME / VIDEO)
+     =============================== */
+        .prose-invert iframe,
+        .prose-invert video {
+          max-width: 100%;
+          border-radius: 0.5rem;
+          margin: 1.5rem auto;
+          display: block;
         }
       `}</style>
     </div>
