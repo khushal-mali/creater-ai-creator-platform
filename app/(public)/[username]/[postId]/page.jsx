@@ -170,7 +170,7 @@ const PostPage = ({ params }) => {
                         sizes="48px"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-lg font-bold">
+                      <div className="flex h-full w-full items-center justify-center rounded-full bg-linear-to-br from-purple-600 to-blue-600 text-lg font-bold">
                         {post.author.name.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -219,16 +219,10 @@ const PostPage = ({ params }) => {
           </div>
 
           {/* Post Content */}
-          {/* <div
-            className="prose prose-lg prose-invert prose-purple max-w-none"
+          <div
+            className="prose prose-lg prose-invert prose-purple w-full max-w-full overflow-hidden"
             dangerouslySetInnerHTML={{ __html: post.content }}
-          /> */}
-          {
-            <div
-              className="prose prose-lg prose-invert prose-purple w-full max-w-full overflow-hidden"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-          }
+          />
 
           <div className="flex items-center gap-6 border-t border-slate-800 pt-4">
             <Button
@@ -321,7 +315,7 @@ const PostPage = ({ params }) => {
                               sizes="32px"
                             />
                           ) : (
-                            <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-sm font-bold">
+                            <div className="flex h-full w-full items-center justify-center rounded-full bg-linear-to-br from-purple-600 to-blue-600 text-sm font-bold">
                               {comment.author?.name?.charAt(0).toUpperCase()}
                             </div>
                           )}
