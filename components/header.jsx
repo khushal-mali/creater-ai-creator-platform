@@ -6,16 +6,30 @@ import { Authenticated, Unauthenticated } from "convex/react";
 import { LayoutDashboard } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { BarLoader } from "react-spinners";
 import { Button } from "./ui/button";
 
 const Header = () => {
   const { isAuthenticated, isLoading } = useStoreUser();
   const path = usePathname();
+  const router = useRouter();
+
+  // Redirect authenticated users from landing page to feed
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && path === "/") {
+      router.push("/feed");
+    }
+  }, [isAuthenticated, isLoading, path, router]);
 
   // Hide header on public profile and post pages (but not on feed)
   if (path !== "/" && path !== "/feed" && path.split("/").length >= 2) {
+    return null;
+  }
+
+  // Hide header on dashboard and public profile/post pages
+  if (path.includes("/dashboard")) {
     return null;
   }
 
